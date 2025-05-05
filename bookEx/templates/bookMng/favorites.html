@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+   My Favorited Books
+{% endblock title %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+      <li>
+          <a href="{{ item.link }}"> {{ item.item }}</a>
+      </li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 align="center">My Favorite Books</h1>
+
+<table align="center" border="2" width="400">
+    <th>
+        Book Name
+    </th>
+    <th>
+        Book Price
+    </th>
+    <th>
+        Book Picture
+    </th>
+   {% for favorite in favorites %}
+     <tr>
+         <td>
+             <a href="{% url 'book_detail' book_id=favorite.id %}">
+                 {{ favorite.name }}
+             </a>
+         </td>
+         <td>
+             {{ favorite.price }}
+         </td>
+         <td align="center">
+              <img src="{{ favorite.picture.url }}" height="60" width="60" alt="Book Picture" />
+         </td>
+     </tr>
+   {% endfor %}
+</table>
+
+{% endblock content %}
+
+
+

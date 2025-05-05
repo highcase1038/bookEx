@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            {% block title %}
+               Title
+            {% endblock title %}
+        </title>
+        <link href="{% static 'main.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyO0i/YUAd10EazQimc5I/OzZwTEfSxFQ" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container" align="center">
+            <header id="header">
+
+              <div class="w3-bar w3-med w3-border custom_width">
+                    <img src="{% static 'logo.jpg'%}" height="100" width="100" alt="" class="w3-bar-item" />
+
+                    <a href="/" class="w3-bar-item w3-button">Home</a>
+                    {% if user.is_authenticated %}
+                    <a href="/displaybooks" class="w3-bar-item w3-button">Buy</a>
+                    <a href="/postbook" class="w3-bar-item w3-button">Post</a>
+                    <a href="/requestbook" class="w3-bar-item w3-button">Request</a>
+                    <a href="/displayusers" class="w3-bar-item w3-button">Users</a>
+
+                    {% endif %}
+                    <a href="/aboutus" class="w3-bar-item w3-button">About Us</a>
+
+                    {% if user.is_authenticated %}
+                    <div class="w3-dropdown-hover">
+                        <button class="w3-button">Account</button>
+                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                            <a href="/myprofile" class="w3-bar-item w3-button">My Profile</a>
+                            <a href="/mybooks" class="w3-bar-item w3-button">My Books</a>
+                            <a href="/favorites" class="w3-bar-item w3-button">My Favorite Books</a>
+                        </div>
+                    </div>
+                   <form id="searchbar" action="{% url 'search_books' %}" method="get" class="w3-bar-item">
+                        <input type="text" name="q" placeholder="Search books">
+                        <button type="submit">Search</button>
+                   </form>
+
+                    {% endif %}
+
+                  <div style="float: right; text-align: right;" class="w3-bar-item">
+                        {% if user.is_authenticated %}
+                            <div>Hello {{ user.username }}</div>
+                            <form method="post" action="{% url 'logout' %}?next=/" style="margin-top:5px;">
+                                {% csrf_token %}
+                                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
+                                    Logout
+                                </button>
+                            </form>
+                        {% else %}
+                            Not Logged in yet
+                             <div style="margin-top:5px;">
+                                <a href="{% url 'login' %}?next=/" style="margin-right:10px;">Login</a> |
+                                <a href="{% url 'register' %}">Register</a>
+                             </div>
+                        {% endif %}
+                    </div>
+
+              </div>
+              <img src="{% static 'banner.jpg'%}" height="150" width="600" alt="" />
+            </header>
+
+            <section id="main" align="center">
+                {% block content %}
+                    <h1 align="center"> This is our BookExchange System </h1>
+                {% endblock content %}
+            </section>
+            <footer id="footer">
+              2025 Fall Django Project BookEx System
+            </footer>
+         </div>
+    </body>
+</html>
+

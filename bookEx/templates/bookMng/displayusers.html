@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Display Users
+{% endblock title %}
+
+
+{% block sidenav %}
+   {% for item in item_list %}
+    <li>
+        <a href="{{ item.link }}"> {{ item.item }} </a>
+    </li>
+    {% endfor %}
+{% endblock sidenav %}
+
+
+{% block content %}
+<h1 align="center">The BookEx Users</h1>
+<table align="center" border="2" width="500">
+    {% for user in users %}
+        <tr>
+            <td>
+                <a href="user_detail/{{ user.id }}">
+                    {{user.username}}
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

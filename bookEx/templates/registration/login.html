@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+   Login
+{% endblock title %}
+
+{% block sidenav %}
+   <li>
+       <a href="/"> HOME </a>
+   </li>
+{% endblock sidenav %}
+
+{% block content %}
+<h1 align="center">User Login</h1>
+
+<div style="max-width: 500px; margin: 0 auto;">
+<form method="post">
+    {% csrf_token %}
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <label for="id_username" style="flex: 0 0 140px; font-weight: bold; text-align: right; margin-right: 10px;">Username:</label>
+        {{ form.username }}
+    </div>
+
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <label for="id_password" style="flex: 0 0 140px; font-weight: bold; text-align: right; margin-right: 10px;">Password:</label>
+        {{ form.password }}
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <input type="submit" value="Login" style="padding: 5px 20px;">
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}">
+</form>
+
+<p class="text-center" style="margin-top: 20px;">To register <a href="{% url 'register' %}">Click Here</a></p>
+</div>
+{% endblock content %}

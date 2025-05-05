@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+   index
+{% endblock title %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+      <li>
+          <a href="{{ item.link }}"> {{ item.item }}</a>
+      </li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<div class="fade-in-fast">
+   <h1 class="text-center">Welcome to Book Exchange!</h1>
+</div>
+
+<div class="fade-in-slow text-center">
+    {% if user.is_authenticated %}
+      <p>Thank you for using our book exchange system.</p>
+      <p>Feel free to look around!</p>
+    {% else %}
+      <p>Please login to gain access to books!</p>
+      <a href="{% url 'login' %}?next=/" class="btn btn-primary mt-2">Login</a>
+    {% endif %}
+</div>
+
+
+<style>
+.fade-in-fast {
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards;
+    animation-delay: 0.2s;
+}
+
+.fade-in-slow {
+    opacity: 0;
+    animation: fadeInUp 1.5s ease forwards;
+    animation-delay: 0.8s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock content %}

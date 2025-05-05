@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1 class="text-center mt-4">About Us</h1>
+
+<hr style="width: 60%; margin: 20px auto; border-top: 1px solid #ccc;">
+
+<div class="container mt-4" style="max-width: 800px;">
+    <p>
+        This system was developed as part of our CS 3337 Project. The primary goal was to build a book exchange platform.
+        We enhanced an existing project by adding new features and improving the overall user experience.
+    </p>
+
+    <p><strong>This updated version of the Book Exchange System was brought to you by:</strong></p>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4 text-center mb-3 fade-in">Czarino Romeo Llorenzo</div>
+        <div class="col-md-4 text-center mb-3 fade-in">Jiahong Zhen</div>
+        <div class="col-md-4 text-center mb-3 fade-in">Joseph Acosta</div>
+        <div class="col-md-4 text-center mb-3 fade-in">Kent Stark</div>
+        <div class="col-md-4 text-center mb-3 fade-in">Osvaldo Valdiviezo</div>
+        <div class="col-md-4 text-center mb-3 fade-in">Phillip Gonzales</div>
+    </div>
+</div>
+
+<style>
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+}
+.fade-in:nth-child(1) { animation-delay: 0.2s; }
+.fade-in:nth-child(2) { animation-delay: 0.4s; }
+.fade-in:nth-child(3) { animation-delay: 0.6s; }
+.fade-in:nth-child(4) { animation-delay: 0.8s; }
+.fade-in:nth-child(5) { animation-delay: 1.0s; }
+.fade-in:nth-child(6) { animation-delay: 1.2s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+{% endblock %}

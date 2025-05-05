@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+User Detail
+{% endblock title %}
+
+
+{% block sidenav %}
+{% for item in item_list %}
+<li>
+    <a href="{{ item.link }}"> {{ item.item }} </a>
+</li>
+{% endfor %}
+{% endblock sidenav %}
+
+
+{% block content %}
+<h1 align="center">User Details: {{ user.username }}</h1>
+<table align="center" border="2" width="700">
+    <tr>
+        <th>Username</th>
+        <th>Date Created</th>
+        <th>Last Login</th>
+    </tr>
+    <tr>
+
+        <td>
+            {{user.username}}
+        </td>
+        <td>
+            {{user.date_joined}}
+            </a>
+        </td>
+        <td>
+            {{user.last_login}}
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+   Post Your Book
+{% endblock title %}
+
+{% block sidenav %}
+   <li>
+       <a href="/"> HOME </a>
+   </li>
+{% endblock sidenav %}
+
+{% block content %}
+<h1 align="center">Post Your Book</h1>
+
+<div style="max-width: 600px; margin: 0 auto;">
+
+{% if submitted %}
+    <h2 style="color: green; text-align: center; margin-top: 20px;">Post Book Successfully!</h2>
+{% else %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table style="width: 100%; font-size: 1.1em;">
+        <tr>
+            <td style="text-align: right; padding: 8px; width: 30%;"><label for="id_name"><strong>Name:</strong></label></td>
+            <td style="text-align: left;"><input type="text" name="name" style="width: 100%;"></td>
+        </tr>
+        <tr>
+            <td style="text-align: right; padding: 8px;"><label for="id_web"><strong>Web:</strong></label></td>
+            <td style="text-align: left;"><input type="text" name="web" style="width: 100%;"></td>
+        </tr>
+        <tr>
+            <td style="text-align: right; padding: 8px;"><label for="id_price"><strong>Price:</strong></label></td>
+            <td style="text-align: left;"><input type="text" name="price" style="width: 100%;"></td>
+        </tr>
+        <tr>
+            <td style="text-align: right; padding: 8px;"><label for="id_picture"><strong>Picture:</strong></label></td>
+            <td style="text-align: left;"><input type="file" name="picture" style="width: 100%;"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="text-align: left;">
+                <input type="submit" value="Submit" style="margin-top: 10px; padding: 6px 20px;">
+            </td>
+        </tr>
+    </table>
+</form>
+{% endif %}
+
+</div>
+{% endblock content %}
