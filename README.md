@@ -1,2 +1,2 @@
 # cs3337
-group project
+group project - Jiahong Zhen, Osvaldo Valdiviezo
