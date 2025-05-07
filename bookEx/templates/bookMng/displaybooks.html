@@ -19,15 +19,10 @@
 <h1 align="center">Display Book Page</h1>
 
 <table align="center" border="2" width="400">
-    <th>
-        Book Name
-    </th>
-    <th>
-        Book Price
-    </th>
-    <th>
-        Book Picture
-    </th>
+    <th> Book Name </th>
+    <th> Book Price </th>
+    <th> Book Website </th>
+    <th> Book Picture </th>
    {% for book in books %}
      <tr>
          <td>
@@ -37,6 +32,9 @@
          </td>
          <td>
              {{ book.price }}
+         </td>
+         <td>
+             <a href="{{ book.web }}" target="_blank">Website</a>
          </td>
          <td align="center">
             <img src="{{ book.picture.url }}" height="60" width="60" alt="Book Picture" />
