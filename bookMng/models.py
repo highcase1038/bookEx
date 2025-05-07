@@ -32,7 +32,7 @@ class Comment(models.Model):
 
 class Rating(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(User, on_delete=models.CASCADE,unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(
         default=0,
         validators=[
@@ -41,9 +41,11 @@ class Rating(models.Model):
         ]
     )
 
+    class Meta:
+        unique_together = ('user', 'book')
+
     def __str__(self):
         return f"Rating: {self.score} by {self.user.username} for {self.book.name}"
-
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
