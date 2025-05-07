@@ -6,6 +6,7 @@
     width: 100%;
     margin: 0 auto;
 }
+
 #main{
     width: 80%;
     align: center;
@@ -16,7 +17,30 @@
     border-style: none;
     height: auto;
     margin: 0 auto;
+    background-color: #f8f9fa;
+    padding: 1rem 0;
+
 }
+
+.custom_width {
+    display: flex;
+    align-items: center; 
+    flex-wrap: wrap;     
+    gap: 10px;           
+    background-color: #343a40;
+    color: white;
+}
+.w3-bar-item img {
+    vertical-align: middle;
+}
+.flex-spacer {
+    flex-grow: 1;
+}
+
+.user-info {
+    text-align: right;
+}
+
 
 #nav li {
     padding-top: 10px;
@@ -36,8 +60,6 @@
     height: 350px;
     float: right;
 }
-
-
 
 #footer {
     text-align: center;
@@ -77,6 +99,10 @@
     font-size: 0.8em;
     color: #888;
 }
+
+
+
+
 
 
 
