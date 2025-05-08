@@ -20,26 +20,39 @@
 
     <!-- Displaying search results -->
     {% if books %}
-        <div align="center">
-            <p>Found {{ books.count }} book(s) matching "{{ query }}":</p>
-            <ul>
+    <div class="table-responsive mt-4">
+        <p>Found {{ books.count }} book(s) matching "{{ query }}":</p>
+        <table class="table table-bordered table-striped text-center w-75 mx-auto" border="2" align="center" cellpadding="10">
+            <thead class="thead-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Publish Date</th>
+                    <th>Book Website</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for book in books %}
-                    <li>
-                        <h3>{{ book.name }}</h3>
-                        <!-- Add other book details you want to display -->
-                        <p>Price: {{ book.price }}</p>
-                        <p>Publish Date: {{ book.publishdate }}</p>
-                        <p><a href="{{ book.web }}">More Info</a></p>
-                        <!-- Display book image if available -->
+                <tr>
+                    <td>{{ book.name }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>{{ book.publishdate }}</td>
+                    <td><a href="{{ book.web }}" target="_blank">Website</a></td>
+                    <td>
                         {% if book.picture %}
                             <img src="{{ book.picture.url }}" height="60" width="60" alt="Book Picture" />
+                        {% else %}
+                            N/A
                         {% endif %}
-                    </li>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
-        </div>
-    {% else %}
-        <p>No books found.</p>
-    {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No books found. Please try again.</p>
+{% endif %}
 {% endblock content %}
 
