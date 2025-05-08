@@ -1,3 +1,5 @@
+<!-- Updated Book Request Template -->
+```html
 {% extends "base.html" %}
 {% load static %}
 
@@ -21,27 +23,31 @@
     <div class="row">
         <!-- Book request form section -->
         <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Request a Book</h4>
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h4 class="mb-0"><i class="fa fa-plus-circle me-2"></i>Request a Book</h4>
                 </div>
                 <div class="card-body">
                     {% if submitted %}
                         <div class="alert alert-success">
-                            Your book request has been submitted successfully!
+                            <i class="fa fa-check-circle me-2"></i>Your book request has been submitted successfully!
                         </div>
                     {% else %}
                         <form method="post" action="">
                             {% csrf_token %}
                             <div class="form-group mb-3">
-                                <label for="id_title">Book Title:</label>
+                                <label for="id_title" class="form-label"><i class="fa fa-book me-1"></i>Book Title:</label>
                                 {{ form.title }}
+                                <small class="form-text text-muted">Enter the title of the book you're looking for</small>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="id_description">Description:</label>
+                                <label for="id_description" class="form-label"><i class="fa fa-info-circle me-1"></i>Description:</label>
                                 {{ form.description }}
+                                <small class="form-text text-muted">Why are you interested in this book? Add any details that might help others.</small>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa fa-paper-plane me-1"></i>Submit Request
+                            </button>
                         </form>
                     {% endif %}
                 </div>
@@ -50,47 +56,97 @@
 
         <!-- Book requests display section -->
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
+            <div class="card shadow">
+                <div class="card-header bg-gradient-secondary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Current Book Requests</h4>
+                    <span class="badge bg-light text-dark">{{ book_requests|length }} Request(s)</span>
                 </div>
                 <div class="card-body p-0">
                     {% if book_requests %}
                         <ul class="list-group list-group-flush">
                         {% for request in book_requests %}
-                            <li class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="mb-1">{{ request.title }}</h5>
-                                        <p class="mb-1">{{ request.description }}</p>
-                                        <small class="text-muted">
-                                            Requested by {{ request.user.username }} on
-                                            {{ request.created_date|date:"F d, Y" }}
-                                        </small>
+                            <li class="list-group-item hover-effect">
+                                <div class="request-card">
+                                    <!-- Enhanced Header with Visual Elements -->
+                                    <div class="request-header">
+                                        <div class="request-title-area">
+                                            <div class="d-flex align-items-center">
+                                                <div class="book-icon-container me-2">
+                                                    <i class="fa fa-book book-icon"></i>
+                                                </div>
+                                                <h5 class="request-title">{{ request.title }}</h5>
+                                            </div>
+                                            <div class="request-meta">
+                                                <span class="badge bg-info text-white request-badge">
+                                                    <i class="fa fa-user me-1"></i> {{ request.user.username }}
+                                                </span>
+                                                <small class="text-muted request-date ms-2">
+                                                    <i class="fa fa-calendar me-1"></i> {{ request.created_date|date:"F d, Y" }}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="request-like-area">
+                                            <div class="like-container">
+                                                {% if user.is_authenticated %}
+                                                <button
+                                                    class="btn {% if request.id in user_liked_requests %}btn-danger{% else %}btn-outline-danger{% endif %} like-button"
+                                                    data-request-id="{{ request.id }}"
+                                                    data-csrf-token="{{ csrf_token }}"
+                                                    title="{% if request.id in user_liked_requests %}Remove interest{% else %}Show interest{% endif %}"
+                                                >
+                                                    <i class="fa fa-heart"></i>
+                                                    <span class="like-count">{{ request.get_like_count }}</span>
+                                                </button>
+                                                {% else %}
+                                                <span class="badge bg-secondary px-2 py-2">
+                                                    <i class="fa fa-heart"></i> {{ request.get_like_count }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="like-container">
-                                        {% if user.is_authenticated %}
-                                        <button
-                                            class="btn btn-sm {% if request.id in user_liked_requests %}btn-danger{% else %}btn-outline-danger{% endif %} like-button"
-                                            data-request-id="{{ request.id }}"
-                                            data-csrf-token="{{ csrf_token }}"
-                                        >
-                                            <i class="fa fa-heart"></i>
-                                            <span class="like-count">{{ request.get_like_count }}</span>
-                                        </button>
+
+                                    <!-- Request Body with Better Formatting -->
+                                    <div class="request-body">
+                                        {% if request.description %}
+                                            <div class="request-description-container">
+                                                <p class="request-description">{{ request.description }}</p>
+                                            </div>
                                         {% else %}
-                                        <span class="badge bg-secondary">
-                                            <i class="fa fa-heart"></i> {{ request.get_like_count }}
-                                        </span>
+                                            <p class="text-muted fst-italic request-description">No additional details provided.</p>
                                         {% endif %}
+
+                                        <!-- Interest Level Indicator -->
+                                        <div class="interest-level mt-2">
+                                            <div class="progress" style="height: 8px;">
+                                                {% with like_count=request.get_like_count %}
+                                                    {% if like_count > 10 %}
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    {% elif like_count > 5 %}
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    {% elif like_count > 2 %}
+                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    {% elif like_count > 0 %}
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    {% else %}
+                                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            <small class="text-muted d-block text-end mt-1">Interest Level</small>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
                         {% endfor %}
                         </ul>
                     {% else %}
-                        <div class="p-4 text-center">
-                            <p class="mb-0">No book requests yet. Be the first to request a book!</p>
+                        <div class="p-5 text-center">
+                            <div class="empty-state">
+                                <i class="fa fa-book fa-3x text-muted mb-3"></i>
+                                <p class="mb-0">No book requests yet. Be the first to request a book!</p>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
@@ -99,7 +155,150 @@
     </div>
 </div>
 
-<!-- JavaScript for liking functionality -->
+<!-- Custom CSS for request cards -->
+<style>
+    /* Card styling */
+    .request-card {
+        padding: 12px 0;
+        transition: all 0.2s ease;
+    }
+
+    .hover-effect:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Header styling */
+    .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .request-title-area {
+        flex-grow: 1;
+    }
+
+    .request-title {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .request-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 5px;
+    }
+
+    .request-badge {
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+
+    .request-like-area {
+        padding-left: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .like-container {
+        position: relative;
+    }
+
+    /* Book icon styling */
+    .book-icon-container {
+        width: 30px;
+        height: 30px;
+        background-color: #f0f4f8;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3498db;
+    }
+
+    /* Content styling */
+    .request-body {
+        padding-left: 5px;
+    }
+
+    .request-description-container {
+        background-color: #f8f9fa;
+        border-left: 3px solid #e9ecef;
+        padding: 10px;
+        border-radius: 0 4px 4px 0;
+        margin-bottom: 10px;
+    }
+
+    .request-description {
+        margin-bottom: 10px;
+        color: #555;
+        white-space: pre-line;
+    }
+
+    .request-date {
+        font-style: italic;
+    }
+
+    /* Button styling */
+    .like-button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .like-button:hover {
+        transform: scale(1.05);
+    }
+
+    /* Animation effects */
+    .pulsate {
+        animation: pulsate 0.5s ease-out;
+    }
+
+    @keyframes pulsate {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    .highlight {
+        animation: highlight 0.7s ease-in-out;
+    }
+
+    @keyframes highlight {
+        0% { color: #dc3545; font-weight: bold; }
+        100% { color: inherit; font-weight: normal; }
+    }
+
+    /* Empty state styling */
+    .empty-state {
+        padding: 20px;
+        color: #6c757d;
+    }
+
+    /* Interest level indicator */
+    .interest-level {
+        opacity: 0.8;
+    }
+
+    /* Custom background gradient */
+    .bg-gradient-secondary {
+        background: linear-gradient(to right, #495057, #6c757d);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(to right, #0062cc, #007bff);
+    }
+</style>
+
+<!-- JavaScript for liking functionality with animations -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners to all like buttons
@@ -109,6 +308,14 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const requestId = this.getAttribute('data-request-id');
             const csrfToken = this.getAttribute('data-csrf-token');
+
+            // Add visual feedback for the click
+            this.classList.add('pulsate');
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                this.classList.remove('pulsate');
+            }, 500);
 
             // Send AJAX request to like the book request
             fetch(`/like_request/${requestId}/`, {
@@ -121,22 +328,74 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                // Update the like count
+                // Update the like count with a nice transition
                 const countElement = this.querySelector('.like-count');
+                countElement.classList.add('highlight');
                 countElement.textContent = data.count;
 
-                // Toggle the button appearance
+                // Remove highlight class after transition
+                setTimeout(() => {
+                    countElement.classList.remove('highlight');
+                }, 700);
+
+                // Toggle the button appearance with tooltip update
                 if (data.liked) {
                     this.classList.remove('btn-outline-danger');
                     this.classList.add('btn-danger');
+                    this.setAttribute('title', 'Remove interest');
+
+                    // Update the interest level indicator
+                    const requestCard = this.closest('.request-card');
+                    const progressBar = requestCard.querySelector('.progress-bar');
+                    updateProgressBar(progressBar, data.count);
                 } else {
                     this.classList.remove('btn-danger');
                     this.classList.add('btn-outline-danger');
+                    this.setAttribute('title', 'Show interest');
+
+                    // Update the interest level indicator
+                    const requestCard = this.closest('.request-card');
+                    const progressBar = requestCard.querySelector('.progress-bar');
+                    updateProgressBar(progressBar, data.count);
                 }
             })
             .catch(error => console.error('Error:', error));
         });
     });
+
+    // Function to update progress bar based on like count
+    function updateProgressBar(progressBar, count) {
+        if (!progressBar) return;
+
+        let width, bgClass;
+
+        // Remove all existing bg classes
+        progressBar.classList.remove('bg-success', 'bg-info', 'bg-primary', 'bg-warning', 'bg-secondary');
+
+        // Set new width and class based on count
+        if (count > 10) {
+            width = '100%';
+            bgClass = 'bg-success';
+        } else if (count > 5) {
+            width = '75%';
+            bgClass = 'bg-info';
+        } else if (count > 2) {
+            width = '50%';
+            bgClass = 'bg-primary';
+        } else if (count > 0) {
+            width = '25%';
+            bgClass = 'bg-warning';
+        } else {
+            width = '10%';
+            bgClass = 'bg-secondary';
+        }
+
+        // Apply new styles with animation
+        progressBar.style.transition = 'width 0.5s ease, background-color 0.5s ease';
+        progressBar.style.width = width;
+        progressBar.classList.add(bgClass);
+    }
 });
 </script>
 {% endblock content %}
+```
