@@ -5,7 +5,6 @@
     Request Book
 {% endblock title %}
 
-
 {% block sidenav %}
    {% for item in item_list %}
    <li>
@@ -15,7 +14,129 @@
 {% endblock sidenav %}
 
 {% block content %}
-<h1> Book Request Coming Soon! </h1>
-<p>Soon we will implement a page so you can request books you want!</p>
-<p>Keep an eye out for that!</p>
+<div class="container">
+    <h1 class="text-center mt-4">Book Request Board</h1>
+    <p class="text-center mb-4">Looking for a specific book? Request it here and see if other users are interested too!</p>
+
+    <div class="row">
+        <!-- Book request form section -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Request a Book</h4>
+                </div>
+                <div class="card-body">
+                    {% if submitted %}
+                        <div class="alert alert-success">
+                            Your book request has been submitted successfully!
+                        </div>
+                    {% else %}
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label for="id_title">Book Title:</label>
+                                {{ form.title }}
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="id_description">Description:</label>
+                                {{ form.description }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Book requests display section -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Current Book Requests</h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if book_requests %}
+                        <ul class="list-group list-group-flush">
+                        {% for request in book_requests %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ request.title }}</h5>
+                                        <p class="mb-1">{{ request.description }}</p>
+                                        <small class="text-muted">
+                                            Requested by {{ request.user.username }} on
+                                            {{ request.created_date|date:"F d, Y" }}
+                                        </small>
+                                    </div>
+                                    <div class="like-container">
+                                        {% if user.is_authenticated %}
+                                        <button
+                                            class="btn btn-sm {% if request.id in user_liked_requests %}btn-danger{% else %}btn-outline-danger{% endif %} like-button"
+                                            data-request-id="{{ request.id }}"
+                                            data-csrf-token="{{ csrf_token }}"
+                                        >
+                                            <i class="fa fa-heart"></i>
+                                            <span class="like-count">{{ request.get_like_count }}</span>
+                                        </button>
+                                        {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="fa fa-heart"></i> {{ request.get_like_count }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="p-4 text-center">
+                            <p class="mb-0">No book requests yet. Be the first to request a book!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for liking functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all like buttons
+    const likeButtons = document.querySelectorAll('.like-button');
+
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const requestId = this.getAttribute('data-request-id');
+            const csrfToken = this.getAttribute('data-csrf-token');
+
+            // Send AJAX request to like the book request
+            fetch(`/like_request/${requestId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=toggle'
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the like count
+                const countElement = this.querySelector('.like-count');
+                countElement.textContent = data.count;
+
+                // Toggle the button appearance
+                if (data.liked) {
+                    this.classList.remove('btn-outline-danger');
+                    this.classList.add('btn-danger');
+                } else {
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-outline-danger');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
 {% endblock content %}

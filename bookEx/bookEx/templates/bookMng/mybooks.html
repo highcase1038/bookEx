@@ -42,11 +42,11 @@
              {{ book.price }}
          </td>
          <td align="center">
-              <img src="{% static book.pic_path %}" height="60" width="60" alt="" />
+             <img src="{{ book.get_image_url }}" height="60" width="60" alt="{{ book.name }}" />
          </td>
          <td>
              <a href="book_delete/{{ book.id }}">
-              <img src="{% static 'delete_icon.jpg' %}" height="60" width="60" alt="" />
+              <img src="{% static 'delete_icon.jpg' %}" height="60" width="60" alt="Delete" />
              </a>
          </td>
 

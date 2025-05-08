@@ -39,7 +39,7 @@
              {{ book.price }}
          </td>
          <td align="center">
-              <img src="{% static book.pic_path %}" height="60" width="60" alt="" />
+              <img src="{{ book.get_image_url }}" height="60" width="60" alt="{{ book.name }}" />
          </td>
      </tr>
    {% endfor %}

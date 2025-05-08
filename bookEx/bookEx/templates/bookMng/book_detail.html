@@ -15,7 +15,7 @@
 {% endblock sidenav %}
 
 {% block content %}
-<div class="book-detail" align="center" style="text-align: center">
+<div class="book-detail" align="center">
     <h1 align="center">{{ book.name }}</h1>
 
     <!-- Display average rating -->
@@ -47,7 +47,7 @@
                 <td>{{ book.name }}</td>
                 <td>{{ book.price }}</td>
                 <td align="center">
-                    <img src="{{ book.picture.url }}" height="60" width="60" alt="Book Picture" />
+                    <img src="{{ book.get_image_url }}" height="120" width="80" alt="{{ book.name }}" style="object-fit: cover;" />
                 </td>
                 <td>{{ book.username }}</td>
                 <td>{{ book.publishdate }}</td>
@@ -81,11 +81,10 @@
             <p>No comments yet.</p>
         {% endfor %}
     </div>
-    <div align="center" style=" margin-top: 10px; ">
+    <div align="center" style="margin-top: 10px;">
         <a href="{% url 'add_to_favorites' book.id %}">Add to Favorites</a>
         <a href="{% url 'remove_from_favorites' book.id %}">Remove from Favorites</a>
     </div>
 
 </div>
 {% endblock content %}
-

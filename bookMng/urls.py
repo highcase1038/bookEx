@@ -19,4 +19,5 @@ urlpatterns = [
     path('displayusers', views.displayusers, name='displayusers'),
     path('user_detail/<int:user_id>', views.user_detail, name='user_detail'),
     path('myprofile', views.myprofile, name='myprofile'),
+path('like_request/<int:request_id>/', views.like_request, name='like_request'),
 ]

@@ -1,8 +1,6 @@
 from django import forms
 from django.forms import ModelForm#
-from .models import Book
-from .models import Comment
-from .models import Rating
+from .models import Book, Comment, Rating, BookRequest
 
 
 class BookForm(ModelForm):
@@ -26,4 +24,13 @@ class RatingForm(forms.ModelForm):
         fields = ['score']
         widgets = {
             'score': forms.NumberInput(attrs={'min': '1', 'max': '10'})
+        }
+
+class BookRequestForm(forms.ModelForm):
+    class Meta:
+        model = BookRequest
+        fields = ['title', 'description']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Book Title'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Why do you want this book?', 'rows': 4}),
         }

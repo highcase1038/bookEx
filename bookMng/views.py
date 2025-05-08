@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -7,8 +7,8 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Avg
 from django.contrib.auth import login, authenticate
-from .models import MainMenu, Book, Comment, Rating, Favorite
-from .forms import BookForm, CommentForm, RatingForm
+from .models import MainMenu, Book, Comment, Rating, Favorite, RequestLike, BookRequest
+from .forms import BookForm, CommentForm, RatingForm, BookRequestForm
 from django.contrib.auth import get_user_model
 
 
@@ -262,3 +262,61 @@ def myprofile(request):
                       'item_list': MainMenu.objects.all(),
                       'user': user
                   })
+
+
+@login_required(login_url=reverse_lazy('login'))
+def requestbook(request):
+    submitted = False
+    book_requests = BookRequest.objects.all().order_by('-created_date')
+
+    if request.method == 'POST':
+        form = BookRequestForm(request.POST)
+        if form.is_valid():
+            book_request = form.save(commit=False)
+            book_request.user = request.user
+            book_request.save()
+            return HttpResponseRedirect('/requestbook?submitted=True')
+    else:
+        form = BookRequestForm()
+        if 'submitted' in request.GET:
+            submitted = True
+
+    user_liked_requests = []
+    if request.user.is_authenticated:
+        user_liked_requests = RequestLike.objects.filter(
+            user=request.user
+        ).values_list('book_request_id', flat=True)
+
+    return render(request,
+                  'bookMng/requestbook.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'form': form,
+                      'submitted': submitted,
+                      'book_requests': book_requests,
+                      'user_liked_requests': user_liked_requests,
+                  })
+
+
+@login_required(login_url=reverse_lazy('login'))
+def like_request(request, request_id):
+    if request.method == 'POST':
+        book_request = get_object_or_404(BookRequest, id=request_id)
+
+        like, created = RequestLike.objects.get_or_create(
+            user=request.user,
+            book_request=book_request
+        )
+
+        if not created and request.POST.get('action') == 'toggle':
+            like.delete()
+            liked = False
+        else:
+            liked = True
+
+        return JsonResponse({
+            'liked': liked,
+            'count': book_request.get_like_count()
+        })
+
+    return redirect('requestbook')
